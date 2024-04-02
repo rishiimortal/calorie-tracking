@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Tracking Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        select,
+        input[type="date"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus {
+            border-color: #4caf50;
+            outline: none;
+        }
+
+        button[type="submit"] {
+            background-color: #4caf50;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calorie Tracking Form</h1>
+        <form id="calorieForm" action="submit_data.php" method="post">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="meal">Meal:</label>
+            <select id="meal" name="meal" required>
+                <option value="" disabled selected>Select Meal</option>
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+            </select>
+
+            <label for="food_item">Food Item:</label>
+            <select id="food_item" name="food_item" required>
+                <option value="" disabled selected>Select Food Item</option>
+                <option value="apple" data-calories="52" data-protein="0.3" data-carbohydrates="13.8" data-fat="0.2">Apple</option>
+                <option value="" disabled selected>Select Food Item</option>
+                <option value="apple" data-calories="52" data-protein="0.3" data-carbohydrates="13.8" data-fat="0.2">Apple</option>
+                <option value="banana" data-calories="89" data-protein="1.3" data-carbohydrates="22.8" data-fat="0.3">Banana</option>
+                <option value="orange" data-calories="62" data-protein="1.2" data-carbohydrates="15.4" data-fat="0.2">Orange</option>
+                <option value="strawberries" data-calories="32" data-protein="0.7" data-carbohydrates="7.7" data-fat="0.3">Strawberries</option>
+                <option value="grapes" data-calories="69" data-protein="0.7" data-carbohydrates="18.1" data-fat="0.2">Grapes</option>
+                <option value="watermelon" data-calories="30" data-protein="0.6" data-carbohydrates="7.6" data-fat="0.2">Watermelon</option>
+                <option value="broccoli" data-calories="55" data-protein="4.2" data-carbohydrates="11.2" data-fat="0.5">Broccoli</option>
+                <option value="carrot" data-calories="41" data-protein="0.9" data-carbohydrates="9.6" data-fat="0.2">Car
+            </select>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" step="0.01" required>
+
+            <label for="calories">Calories:</label>
+            <input type="number" id="calories" name="calories" step="0.01" required readonly>
+
+            <label for="protein">Protein (g):</label>
+            <input type="number" id="protein" name="protein" step="0.01">
+
+            <label for="carbohydrates">Carbohydrates (g):</label>
+            <input type="number" id="carbohydrates" name="carbohydrates" step="0.01">
+
+            <label for="fat">Fat (g):</label>
+            <input type="number" id="fat" name="fat" step="0.01">
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+<script>
+    document.getElementById('calorieForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Fetch form data
+        var formData = new FormData(this);
+
+        // Submit form data to submit_data.php using AJAX
+        fetch('connection.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(data.message); // Display success message
+            } else {
+                alert(data.message); // Display error message
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
+    document.getElementById('food_item').addEventListener('change', function() {
+        var selectedOption = this.options[this.selectedIndex];
+        document.getElementById('calories').value = selectedOption.getAttribute('data-calories');
+        document.getElementById('protein').value = selectedOption.getAttribute('data-protein');
+        document.getElementById('carbohydrates').value = selectedOption.getAttribute('data-carbohydrates');
+        document.getElementById('fat').value = selectedOption.getAttribute('data-fat');
+    });
+</script>
+
+</body>
+</html>
